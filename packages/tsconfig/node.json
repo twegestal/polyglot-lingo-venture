@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "noEmit": true,
+    "strictPropertyInitialization": false,
+    "resolveJsonModule": true
+  }
+}

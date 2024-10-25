@@ -1,0 +1,21 @@
+{
+  "name": "grottpojkarna-web-app",
+  "version": "1.0.0",
+  "description": "Monorepo for grottpojkarna",
+  "packageManager": "pnpm@8.6.2",
+  "scripts": {
+    "dev": "turbo dev",
+    "lint": "turbo lint --color --cache-dir=.turbo",
+    "format": "turbo format",
+    "typecheck": "turbo typecheck --color --cache-dir=.turbo",
+    "clean": "turbo clean",
+    "test": "turbo test --color --cache-dir=.turbo -- --run",
+    "test:watch": "turbo test --color --cache-dir=.turbo -- --watch"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3",
+    "turbo": "^1.10.13"
+  },
+  "author": "twegestal",
+  "license": "ISC"
+}
