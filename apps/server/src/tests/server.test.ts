@@ -4,5 +4,10 @@ import { createServer } from '../server';
 
 describe('Server endpoint test', () => {
   it('Should return 200 hello world', async () =>
-    await supertest(createServer()).get('/hello').expect(200));
+    await supertest(createServer())
+      .get('/hello')
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual('Hello, World!');
+      }));
 });
