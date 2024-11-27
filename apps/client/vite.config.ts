@@ -12,9 +12,9 @@ export default defineConfig(({ mode }) => {
       port: 3001,
       proxy: {
         '/api': {
-          target: env.API_URL,
+          target: env.VITE_API_URL,
           changeOrigin: true,
-          secure: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
     },

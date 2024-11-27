@@ -1,3 +1,12 @@
+import { useEffect } from 'react';
+import { useHealth } from './hooks/useHealth';
+
 export const App = () => {
-  return <p>Hello</p>;
+  const { health, getHealth } = useHealth();
+
+  useEffect(() => {
+    getHealth();
+  }, [health, getHealth]);
+
+  return <p>{health}</p>;
 };

@@ -4,7 +4,7 @@ export const createServer = () => {
   const app = express();
 
   app.use(express.json());
-  app.get('/hello', async (_req, res, _next) => {
+  app.get('/health', async (_req, res, _next) => {
     res.status(200).json('Hello, World');
   });
 
