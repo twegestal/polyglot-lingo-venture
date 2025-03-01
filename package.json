@@ -1,5 +1,5 @@
 {
-  "name": "typescript-monorepo-template",
+  "name": "polyglot-lingo-venture",
   "version": "1.0.0",
   "description": "simple all typescript React/Express monorepo",
   "packageManager": "pnpm@8.6.2",
