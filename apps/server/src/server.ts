@@ -1,12 +1,13 @@
 import express from 'express';
+import { healthRouter } from './routes/healthRouter';
+import { quizRouter } from './routes/quizRouter';
 
 export const createServer = () => {
   const app = express();
 
   app.use(express.json());
-  app.get('/health', async (_req, res, _next) => {
-    res.status(200).json('Hello, World');
-  });
+  app.use('/health', healthRouter());
+  app.use('/quizzes', quizRouter());
 
   return app;
 };
