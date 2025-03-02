@@ -2,7 +2,6 @@ import { supabase } from '../utils/supabase';
 import { Quiz, Question } from 'api';
 
 export const quizRepository = {
-  // Fetch all quizzes (metadata only)
   async getAllQuizzes(): Promise<Quiz[]> {
     const { data, error } = await supabase
       .from('quizzes')
@@ -13,15 +12,14 @@ export const quizRepository = {
     return data as Quiz[];
   },
 
-  // Fetch a single quiz with its questions
-  async getQuizById(quizId: string): Promise<{ quiz: Quiz; questions: Question[] } | null> {
+  async getQuizById(quizId: string): Promise<Quiz | null> {
     const { data: quiz, error: quizError } = await supabase
       .from('quizzes')
       .select('id, title, description, difficulty, language, created_at')
       .eq('id', quizId)
       .single();
 
-    if (quizError) return null;
+    if (quizError || !quiz) return null;
 
     const { data: rawQuestions, error: questionError } = await supabase
       .from('quiz_questions')
@@ -55,10 +53,9 @@ export const quizRepository = {
       questions.push(question);
     }
 
-    return { quiz, questions };
+    return { ...quiz, questions };
   },
 
-  // Store a new quiz
   async saveQuiz(
     title: string,
     description: string,
@@ -66,7 +63,6 @@ export const quizRepository = {
     language: string,
     questions: Question[],
   ): Promise<string> {
-    // Insert quiz metadata
     const { data: quiz, error: quizError } = await supabase
       .from('quizzes')
       .insert([{ title, description, difficulty, language }])
@@ -75,7 +71,6 @@ export const quizRepository = {
 
     if (quizError) throw quizError;
 
-    // Insert questions
     for (const q of questions) {
       const { data: question, error: questionError } = await supabase
         .from('quiz_questions')
@@ -92,7 +87,6 @@ export const quizRepository = {
 
       if (questionError) throw questionError;
 
-      // Insert options for single_choice questions
       if (q.type === 'single_choice' && q.options) {
         const optionData = q.options.map((option) => ({ question_id: question.id, option }));
         const { error: optionError } = await supabase.from('quiz_options').insert(optionData);

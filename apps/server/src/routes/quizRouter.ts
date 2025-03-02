@@ -1,16 +1,39 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
-import { generateQuiz } from '../services/quizService';
+import { generateQuiz, getAllQuizzes, getQuizById } from '../services/quizService';
 
 export const quizRouter = () => {
   const router = express.Router();
 
-  router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
-    const quizzes: never[] = [];
+  router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const quizzes = await getAllQuizzes();
 
-    return res.status(200).json(quizzes);
+      return res.status(200).send(quizzes);
+    } catch (error) {
+      next(error);
+    }
   });
 
-  router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {});
+  router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+    console.log('Quiz by id called');
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ message: 'Quiz id is required' });
+      }
+
+      const quiz = await getQuizById(id);
+
+      if (!quiz) {
+        return res.status(404).json({ message: 'Quiz not found' });
+      }
+
+      return res.status(200).json(quiz);
+    } catch (error) {
+      next(error);
+    }
+  });
 
   router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {

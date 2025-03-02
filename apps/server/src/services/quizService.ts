@@ -10,6 +10,14 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+export const getAllQuizzes = async (): Promise<Quiz[]> => {
+  return await quizRepository.getAllQuizzes();
+};
+
+export const getQuizById = async (id: string): Promise<Quiz | null> => {
+  return await quizRepository.getQuizById(id);
+};
+
 export const generateQuiz = async (language: string, difficulty: string) => {
   const prompt = getQuizPropmt(language, difficulty);
 
