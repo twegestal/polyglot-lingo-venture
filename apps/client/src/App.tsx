@@ -1,12 +1,5 @@
-import { useEffect } from 'react';
-import { useHealth } from './hooks/useHealth';
+import { AuthenticationForm } from './components/auth/AuthenticationForm';
 
 export const App = () => {
-  const { health, getHealth } = useHealth();
-
-  useEffect(() => {
-    getHealth();
-  }, [health, getHealth]);
-
-  return <p>{health}</p>;
+  return <AuthenticationForm />;
 };
