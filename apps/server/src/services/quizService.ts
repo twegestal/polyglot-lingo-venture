@@ -1,6 +1,6 @@
 import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
-import { Quiz, QuizSchema } from 'api';
+import { Quiz, quizValidator } from 'api';
 import { quizRepository } from '../repositories/quizRepository';
 import { getQuizPropmt } from '../utils/promptUtils';
 
@@ -36,7 +36,7 @@ export const generateQuiz = async (language: string, difficulty: string) => {
 
     const rawQuizData = JSON.parse(response.choices[0].message.content);
 
-    const parsedQuiz = QuizSchema.safeParse(rawQuizData);
+    const parsedQuiz = quizValidator.safeParse(rawQuizData);
 
     if (!parsedQuiz.success) {
       console.error('OpenAI response validation failed:', parsedQuiz.error.format());

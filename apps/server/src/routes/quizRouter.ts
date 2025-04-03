@@ -19,7 +19,6 @@ export const quizRouter = () => {
   });
 
   router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-    console.log('Quiz by id called');
     try {
       const { id } = req.params;
       logger.info(`Fetching quiz: ${id}`);

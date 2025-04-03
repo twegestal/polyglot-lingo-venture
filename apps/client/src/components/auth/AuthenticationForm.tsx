@@ -10,9 +10,27 @@ import {
 } from '@mantine/core';
 import classes from '../../styles/AuthenticationImage.module.css';
 import { useState } from 'react';
+import { useAuth } from '../../contexts/auth';
 
 export const AuthenticationForm = () => {
+  const { login } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await login(email, password);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={classes.wrapper}>
@@ -21,9 +39,22 @@ export const AuthenticationForm = () => {
           {isRegistering ? 'Create an Account' : 'Welcome to Polyglot Lingo Venture!'}
         </Title>
 
-        <TextInput label='Email address' placeholder='hello@gmail.com' size='md' />
+        <TextInput
+          label='Email address'
+          placeholder='hello@gmail.com'
+          size='md'
+          value={email}
+          onChange={(e) => setEmail(e.currentTarget.value)}
+        />
 
-        <PasswordInput label='Password' placeholder='Your password' mt='md' size='md' />
+        <PasswordInput
+          label='Password'
+          placeholder='Your password'
+          mt='md'
+          size='md'
+          value={password}
+          onChange={(e) => setPassword(e.currentTarget.value)}
+        />
 
         {isRegistering && (
           <PasswordInput
@@ -31,12 +62,19 @@ export const AuthenticationForm = () => {
             placeholder='Confirm your password'
             mt='md'
             size='md'
+            disabled
           />
         )}
 
-        {!isRegistering && <Checkbox label='Keep me logged in' mt='xl' size='md' />}
+        {!isRegistering && <Checkbox label='Keep me logged in' mt='xl' size='md' disabled />}
 
-        <Button fullWidth mt='xl' size='md'>
+        {error && (
+          <Text c='red' ta='center' mt='md'>
+            {error}
+          </Text>
+        )}
+
+        <Button fullWidth mt='xl' size='md' onClick={handleLogin} loading={loading}>
           {isRegistering ? 'Sign Up' : 'Login'}
         </Button>
 

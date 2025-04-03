@@ -29,6 +29,9 @@ importers:
       '@mantine/hooks':
         specifier: ^7.17.1
         version: 7.17.1(react@18.2.0)
+      '@supabase/supabase-js':
+        specifier: ^2.49.1
+        version: 2.49.1
       '@tabler/icons-react':
         specifier: ^3.31.0
         version: 3.31.0(react@18.2.0)

@@ -1,5 +1,8 @@
 import { AuthenticationForm } from './components/auth/AuthenticationForm';
+import { useAuth } from './contexts/auth';
 
 export const App = () => {
-  return <AuthenticationForm />;
+  const { user } = useAuth();
+  
+  return <>{user ? <p>Welcome, {user?.email}</p> : <AuthenticationForm />}</>;
 };
