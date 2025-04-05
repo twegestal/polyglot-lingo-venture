@@ -17,6 +17,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mantine/core": "^7.17.1",
+    "@mantine/form": "^7.17.3",
     "@mantine/hooks": "^7.17.1",
     "@supabase/supabase-js": "^2.49.1",
     "@tabler/icons-react": "^3.31.0",
@@ -25,6 +26,7 @@
     "ky": "^1.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^7.4.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {

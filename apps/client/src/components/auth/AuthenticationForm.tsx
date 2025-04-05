@@ -1,13 +1,4 @@
-import {
-  Anchor,
-  Button,
-  Checkbox,
-  Paper,
-  PasswordInput,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { Anchor, Button, Paper, PasswordInput, Text, TextInput, Title } from '@mantine/core';
 import classes from '../../styles/AuthenticationImage.module.css';
 import { useState } from 'react';
 import { useAuth } from '../../contexts/auth';
@@ -65,8 +56,6 @@ export const AuthenticationForm = () => {
             disabled
           />
         )}
-
-        {!isRegistering && <Checkbox label='Keep me logged in' mt='xl' size='md' disabled />}
 
         {error && (
           <Text c='red' ta='center' mt='md'>
