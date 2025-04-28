@@ -1,13 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
+import { ErrorResponse } from 'api';
 
-type ErrorResponse = {
-  message: string;
+interface ErrorProps extends Error {
   status?: number;
-  stack?: string;
-};
+}
 
-export const errorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {
+export const errorHandler = (
+  err: ErrorProps,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+) => {
   logger.error(`[${err.status || 500}] ${err.message}`);
 
   const response: ErrorResponse = {
