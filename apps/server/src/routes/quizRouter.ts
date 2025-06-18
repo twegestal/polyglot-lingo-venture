@@ -1,19 +1,27 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { generateQuiz, getAllQuizzes, getQuizById } from '../services/quizService';
+import {
+  generateQuiz,
+  getAllQuizzes,
+  getQuizById,
+  submitQuizResult,
+} from '../services/quizService';
 import { logger } from '../utils/logger';
 
 export const quizRouter = () => {
   const router = express.Router();
 
-  router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
+  router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      logger.info('Fetching all quizzes');
-      const quizzes = await getAllQuizzes();
+      res.setHeader('Cache-Control', 'no-store');
+      const user = (req as any).user;
 
-      logger.info(`Successfully fetched ${quizzes.length} quizzes`);
+      if (!user?.id) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const quizzes = await getAllQuizzes(user.id);
       return res.status(200).send(quizzes);
     } catch (error) {
-      logger.error(`Error fetching quizzes: ${error}`);
       next(error);
     }
   });
@@ -60,6 +68,33 @@ export const quizRouter = () => {
       return res.status(201).json(quiz);
     } catch (error) {
       logger.error(`Error generating quiz: ${error}`);
+      next(error);
+    }
+  });
+
+  router.post('/:id/result', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const quizId = req.params.id;
+      const { score, maxScore, status } = req.body;
+      const user = (req as any).user;
+
+      if (!user?.id) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      if (
+        !quizId ||
+        typeof score !== 'number' ||
+        typeof maxScore !== 'number' ||
+        !['success', 'fail', 'neutral'].includes(status)
+      ) {
+        return res.status(400).json({ message: 'Missing or invalid result data' });
+      }
+
+      const result = await submitQuizResult(user.id, quizId, score, maxScore, status);
+
+      res.status(201).json(result);
+    } catch (error) {
       next(error);
     }
   });

@@ -1,15 +1,34 @@
 import { supabase } from '../utils/supabase';
-import { Quiz, Question } from 'api';
+import { Quiz, Question, QuizMetadata } from 'api';
 
 export const quizRepository = {
-  async getAllQuizzes(): Promise<Quiz[]> {
+  async getAllQuizzes(userId: string): Promise<QuizMetadata[]> {
     const { data, error } = await supabase
       .from('quizzes')
-      .select('id, title, description, difficulty, language, created_at')
+      .select(
+        `
+      id,
+      title,
+      description,
+      difficulty,
+      language,
+      created_at,
+      quiz_results (
+        status
+      )
+    `,
+      )
+      .eq('quiz_results.user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data as Quiz[];
+
+    const mapped = (data ?? []).map((quiz) => ({
+      ...quiz,
+      status: quiz.quiz_results?.[0]?.status ?? 'neutral',
+    }));
+
+    return mapped;
   },
 
   async getQuizById(quizId: string): Promise<Quiz | null> {
@@ -95,5 +114,29 @@ export const quizRepository = {
     }
 
     return quiz.id;
+  },
+
+  async submitQuizResult(
+    userId: string,
+    quizId: string,
+    score: number,
+    maxScore: number,
+    status: 'success' | 'fail' | 'neutral',
+  ) {
+    const { data, error } = await supabase
+      .from('quiz_results')
+      .upsert([
+        {
+          user_id: userId,
+          quiz_id: quizId,
+          score,
+          max_score: maxScore,
+          status,
+        },
+      ])
+      .select();
+
+    if (error) throw error;
+    return data;
   },
 };

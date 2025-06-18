@@ -20,3 +20,7 @@ export const quizValidator = z.object({
     )
     .min(5, 'A quiz must have at least 5 questions'),
 });
+
+export const quizMetadataValidator = quizValidator.omit({ questions: true }).extend({
+  status: z.enum(['success', 'fail', 'neutral']).optional(),
+});

@@ -3,7 +3,7 @@ import ky from 'ky';
 import { api } from '../api';
 import { useAuth } from '../contexts/auth';
 
-const prefixUrl = '/api';
+const prefixUrl = '/api/';
 type ApiMethod = keyof ReturnType<typeof api>;
 
 export const useApi = <T extends ApiMethod>(method: T) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, List, Text, Title } from '@mantine/core';
-import { useQuizzes } from '../../hooks/useQuizzes';
-import { Quiz } from 'api';
+import { useQuizzes } from '../../hooks/useQuiz';
+import { QuizMetadata } from 'api';
 import { difficultyOrder } from '../../util/constants';
 import { QuizListItem } from './QuizListItem';
 
@@ -11,14 +11,14 @@ export const QuizList = ({ redirectToQuiz }: { redirectToQuiz: (id: string) => v
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <Text>Failed to load quizzes</Text>;
 
-  const groupByLanguage = (quizzes: Quiz[]) => {
-    return quizzes.reduce<Record<string, Quiz[]>>((groups, quiz) => {
+  const groupByLanguage = (quizzes: QuizMetadata[]) => {
+    return quizzes.reduce<Record<string, QuizMetadata[]>>((groups, quiz) => {
       (groups[quiz.language] = groups[quiz.language] || []).push(quiz);
       return groups;
     }, {});
   };
 
-  const sortQuizzesByDifficulty = (quizzes: Quiz[]) => {
+  const sortQuizzesByDifficulty = (quizzes: QuizMetadata[]) => {
     return quizzes.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
   };
 
@@ -36,12 +36,7 @@ export const QuizList = ({ redirectToQuiz }: { redirectToQuiz: (id: string) => v
           />
 
           {sortQuizzesByDifficulty(quizzesInLanguage).map((quiz) => (
-            <QuizListItem
-              key={quiz.id}
-              quiz={quiz}
-              redirectToQuiz={redirectToQuiz}
-              /* status={getStatus(quiz.id)} */
-            />
+            <QuizListItem key={quiz.id} quiz={quiz} redirectToQuiz={redirectToQuiz} />
           ))}
         </React.Fragment>
       ))}

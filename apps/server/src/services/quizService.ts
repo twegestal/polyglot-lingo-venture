@@ -1,6 +1,6 @@
 import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
-import { Quiz, quizValidator } from 'api';
+import { Quiz, QuizMetadata, quizValidator } from 'api';
 import { quizRepository } from '../repositories/quizRepository';
 import { getQuizPropmt } from '../utils/promptUtils';
 
@@ -10,8 +10,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const getAllQuizzes = async (): Promise<Quiz[]> => {
-  return await quizRepository.getAllQuizzes();
+export const getAllQuizzes = async (userId: string): Promise<QuizMetadata[]> => {
+  return await quizRepository.getAllQuizzes(userId);
 };
 
 export const getQuizById = async (id: string): Promise<Quiz | null> => {
@@ -58,4 +58,14 @@ export const generateQuiz = async (language: string, difficulty: string) => {
     console.error('Error generating quiz:', error);
     throw new Error('Failed to generate quiz.');
   }
+};
+
+export const submitQuizResult = async (
+  userId: string,
+  quizId: string,
+  score: number,
+  maxScore: number,
+  status: 'success' | 'fail' | 'neutral',
+) => {
+  return await quizRepository.submitQuizResult(userId, quizId, score, maxScore, status);
 };
