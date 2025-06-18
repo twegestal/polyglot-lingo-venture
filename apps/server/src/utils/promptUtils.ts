@@ -1,4 +1,4 @@
-export const getQuizPropmt = (language: string, difficulty: string) =>
+export const getQuizPrompt = (language: string, difficulty: string) =>
   `I want you to create a vocabulary quiz that tests the user on the language ${language}. The questions should be phrased in English. The title should be phrased in an engaging manner, inspiring the user to learn. The questions should range from serious to absurd. There should be at least five questions. The questions should be either single choice or free text. The difficulty of the quiz should be on a ${difficulty} level. Please provide a description of the quiz. Please answer only with a JSON object using the following schema:
     {
       "title": {"type": "string"},

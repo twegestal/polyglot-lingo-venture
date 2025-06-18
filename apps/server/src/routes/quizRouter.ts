@@ -3,6 +3,7 @@ import {
   generateQuiz,
   getAllQuizzes,
   getQuizById,
+  getQuizStats,
   submitQuizResult,
 } from '../services/quizService';
 import { logger } from '../utils/logger';
@@ -12,7 +13,6 @@ export const quizRouter = () => {
 
   router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      
       const user = (req as any).user;
 
       if (!user?.id) {
@@ -95,6 +95,22 @@ export const quizRouter = () => {
 
       res.status(201).json(result);
     } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get('/stats', async (req, res, next) => {
+    try {
+      const user = (req as any).user;
+
+      if (!user?.id) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const stats = await getQuizStats(user.id);
+      res.status(200).json(stats);
+    } catch (error) {
+      logger.error(`Error fetching quiz stats: ${error}`);
       next(error);
     }
   });

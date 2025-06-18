@@ -2,7 +2,7 @@ import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
 import { Quiz, QuizMetadata, quizValidator } from 'api';
 import { quizRepository } from '../repositories/quizRepository';
-import { getQuizPropmt } from '../utils/promptUtils';
+import { getQuizPrompt } from '../utils/promptUtils';
 import { cleanResponse } from '../utils/responseUtils';
 
 dotenv.config();
@@ -20,7 +20,7 @@ export const getQuizById = async (id: string): Promise<Quiz | null> => {
 };
 
 export const generateQuiz = async (language: string, difficulty: string) => {
-  const prompt = getQuizPropmt(language, difficulty);
+  const prompt = getQuizPrompt(language, difficulty);
 
   try {
     const response = await openai.chat.completions.create({
@@ -80,4 +80,8 @@ export const submitQuizResult = async (
   status: 'success' | 'fail' | 'neutral',
 ) => {
   return await quizRepository.submitQuizResult(userId, quizId, score, maxScore, status);
+};
+
+export const getQuizStats = async (userId: string) => {
+  return await quizRepository.getQuizStats(userId);
 };

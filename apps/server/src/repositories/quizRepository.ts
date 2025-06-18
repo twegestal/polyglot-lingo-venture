@@ -144,4 +144,29 @@ export const quizRepository = {
     if (error) throw error;
     return data;
   },
+
+  async getQuizStats(userId: string) {
+    const { data, error } = await supabase
+      .from('quiz_results')
+      .select('status')
+      .eq('user_id', userId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const stats = {
+      completed: 0,
+      failed: 0,
+      unattempted: 0,
+    };
+
+    for (const row of data) {
+      if (row.status === 'success') stats.completed++;
+      else if (row.status === 'fail') stats.failed++;
+      else stats.unattempted++;
+    }
+
+    return stats;
+  },
 };
