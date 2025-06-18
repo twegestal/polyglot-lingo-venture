@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../util/authClient';
 import type { User } from '@supabase/supabase-js';
 
@@ -6,7 +6,8 @@ type AuthContextType = {
   token: string | null;
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
+  loading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +21,41 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const initSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error getting session:', error.message);
+        setLoading(false);
+        return;
+      }
+
+      const session = data.session;
+      if (session) {
+        setToken(session.access_token);
+        setUser(session.user);
+      }
+      setLoading(false);
+    };
+
+    initSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setToken(session.access_token);
+        setUser(session.user);
+      } else {
+        setToken(null);
+        setUser(null);
+      }
+    });
+
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, []);
 
   const login = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -33,12 +69,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(data.session.user);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ token, user, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

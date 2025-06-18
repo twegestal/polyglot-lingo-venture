@@ -17,7 +17,9 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fireworks-js/react": "^2.10.8",
+    "@mantine/charts": "^8.1.1",
     "@mantine/core": "^7.17.1",
+    "@mantine/dates": "^8.1.1",
     "@mantine/form": "^7.17.3",
     "@mantine/hooks": "^7.17.1",
     "@mantine/notifications": "^8.1.1",
@@ -32,6 +34,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.4.1",
+    "recharts": "^2.15.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
