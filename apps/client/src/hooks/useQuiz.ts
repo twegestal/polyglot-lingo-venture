@@ -30,3 +30,8 @@ export const useSubmitQuizResult = () => {
     },
   });
 };
+
+export const useCreateQuiz = () => {
+  const createQuiz = useApi('createQuiz');
+  return useMutation({ mutationFn: createQuiz });
+};

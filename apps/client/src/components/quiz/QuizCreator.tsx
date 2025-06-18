@@ -2,14 +2,17 @@ import { TextInput, Button, Group, Paper, Text, SegmentedControl } from '@mantin
 import { useForm } from '@mantine/form';
 import { IconSquarePlus } from '@tabler/icons-react';
 
-export const QuizCreator = () => {
+export const QuizCreator = ({
+  onCreate,
+}: {
+  onCreate: (language: string, difficulty: string) => void;
+}) => {
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
       language: '',
       difficulty: 'beginner',
     },
-
     validate: {
       language: (value) =>
         /^.{2,30}$/.test(value) ? null : 'Input needs to be between 2 and 30 characters',
@@ -22,7 +25,11 @@ export const QuizCreator = () => {
       <Text size='xl' mb='md'>
         Create a new language quiz
       </Text>
-      <form onSubmit={form.onSubmit(() => console.log(''))}>
+      <form
+        onSubmit={form.onSubmit((values) => {
+          onCreate(values.language, values.difficulty);
+        })}
+      >
         <TextInput
           withAsterisk
           label='Language'
@@ -41,18 +48,9 @@ export const QuizCreator = () => {
           fullWidth
           withItemsBorders={false}
           data={[
-            {
-              value: 'beginner',
-              label: 'Beginner',
-            },
-            {
-              value: 'intermediate',
-              label: 'Intermediate',
-            },
-            {
-              value: 'advanced',
-              label: 'ProElite',
-            },
+            { value: 'beginner', label: 'Beginner' },
+            { value: 'intermediate', label: 'Intermediate' },
+            { value: 'advanced', label: 'ProElite' },
           ]}
         />
         <Group justify='center' mt='md'>

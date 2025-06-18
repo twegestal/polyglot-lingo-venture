@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { Quiz, QuizMetadata, quizValidator } from 'api';
 import { quizRepository } from '../repositories/quizRepository';
 import { getQuizPropmt } from '../utils/promptUtils';
+import { cleanResponse } from '../utils/responseUtils';
 
 dotenv.config();
 
@@ -30,11 +31,22 @@ export const generateQuiz = async (language: string, difficulty: string) => {
       ],
     });
 
-    if (!response.choices[0].message?.content) {
+    const content = response.choices[0].message?.content;
+    if (!content) {
       throw new Error('No response from OpenAI.');
     }
 
-    const rawQuizData = JSON.parse(response.choices[0].message.content);
+    const cleanedContent = cleanResponse(content);
+
+    let rawQuizData;
+    try {
+      rawQuizData = JSON.parse(cleanedContent);
+    } catch (parseError) {
+      console.error('Failed to parse cleaned OpenAI response');
+      console.error('Original content:', content);
+      console.error('Cleaned content:', cleanedContent);
+      throw new Error('Malformed JSON returned by OpenAI.');
+    }
 
     const parsedQuiz = quizValidator.safeParse(rawQuizData);
 
