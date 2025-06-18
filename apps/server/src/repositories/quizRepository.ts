@@ -125,15 +125,20 @@ export const quizRepository = {
   ) {
     const { data, error } = await supabase
       .from('quiz_results')
-      .upsert([
+      .upsert(
+        [
+          {
+            user_id: userId,
+            quiz_id: quizId,
+            score,
+            max_score: maxScore,
+            status,
+          },
+        ],
         {
-          user_id: userId,
-          quiz_id: quizId,
-          score,
-          max_score: maxScore,
-          status,
+          onConflict: 'user_id,quiz_id',
         },
-      ])
+      )
       .select();
 
     if (error) throw error;

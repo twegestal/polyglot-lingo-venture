@@ -12,7 +12,7 @@ export const quizRouter = () => {
 
   router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.setHeader('Cache-Control', 'no-store');
+      
       const user = (req as any).user;
 
       if (!user?.id) {

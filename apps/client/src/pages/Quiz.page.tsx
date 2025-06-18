@@ -9,101 +9,101 @@ import { useQuiz, useSubmitQuizResult } from '../hooks/useQuiz';
 import { fireworksOptions } from '../util/constants';
 import { IconCircleFilled } from '@tabler/icons-react';
 import { blueManGroupBlue } from '../util/constants';
-import { Question } from 'api';
+import { EvaluationResult, Question } from 'api';
 
 export const QuizPage = () => {
-  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // const [answers, setAnswers] = useState<string[]>([]);
-  // const [evaluationResult, setEvaluationResult] = useState();
-  // const [isResultOpen, setIsResultOpen] = useState(false);
-  // const navigate = useNavigate();
-  // const { id } = useParams();
-  // const { data: quiz, isLoading, isError } = useQuiz(id);
-  // const { mutateAsync: submitQuizResult } = useSubmitQuizResult();
-  // const [active, setActive] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [evaluationResult, setEvaluationResult] = useState<EvaluationResult | undefined>();
+  const [isResultOpen, setIsResultOpen] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { data: quiz, isLoading, isError } = useQuiz(id);
+  const { mutateAsync: submitQuizResult } = useSubmitQuizResult();
+  const [active, setActive] = useState(0);
 
-  // if (isLoading) return <Text>Loading quiz...</Text>;
-  // if (isError || !quiz) return <Text>Failed to load quiz.</Text>;
+  if (isLoading) return <Text>Loading quiz...</Text>;
+  if (isError || !quiz) return <Text>Failed to load quiz.</Text>;
 
-  // const handleAnswerChange = (value: string) => {
-  //   const newAnswers = [...answers];
-  //   newAnswers[currentQuestionIndex] = value;
-  //   setAnswers(newAnswers);
-  // };
+  const handleAnswerChange = (value: string) => {
+    const newAnswers = [...answers];
+    newAnswers[currentQuestionIndex] = value;
+    setAnswers(newAnswers);
+  };
 
-  // const nextQuestion = () => {
-  //   const nextIndex = currentQuestionIndex + 1;
-  //   if (nextIndex < quiz.questions.length) {
-  //     setActive(nextIndex);
-  //     setCurrentQuestionIndex(nextIndex);
-  //   }
-  // };
+  const nextQuestion = () => {
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < quiz.questions.length) {
+      setActive(nextIndex);
+      setCurrentQuestionIndex(nextIndex);
+    }
+  };
 
-  // const submitAnswers = async () => {
-  //   const nextIndex = currentQuestionIndex + 1;
-  //   setActive(nextIndex);
+  const submitAnswers = async () => {
+    const nextIndex = currentQuestionIndex + 1;
+    setActive(nextIndex);
 
-  //   const results = evaluateAnswers();
-  //   const score = results.reduce((acc, curr) => acc + (curr.isCorrect ? 1 : 0), 0);
-  //   const maxScore = quiz.questions.length;
-  //   const isPassed = score === maxScore;
+    const results = evaluateAnswers();
+    const score = results.reduce((acc, curr) => acc + (curr.isCorrect ? 1 : 0), 0);
+    const maxScore = quiz.questions.length;
+    const isPassed = score === maxScore;
 
-  //   try {
-  //     await submitQuizResult({
-  //       id: quiz.id,
-  //       score,
-  //       maxScore,
-  //       isPassed,
-  //     });
-  //   } catch (err) {
-  //     console.error('Failed to submit quiz result:', err);
-  //   }
+    try {
+      await submitQuizResult({
+        id: quiz.id!,
+        score,
+        maxScore,
+        isPassed,
+      });
+    } catch (err) {
+      console.error('Failed to submit quiz result:', err);
+    }
 
-  //   setEvaluationResult({ results, score });
-  //   setIsResultOpen(true);
-  // };
+    setEvaluationResult({ results, score });
+    setIsResultOpen(true);
+  };
 
-  // const evaluateAnswers = () => {
-  //   return quiz.questions.map((question, index) => {
-  //     const userAnswer = answers[index].toLowerCase();
-  //     const correctAnswer = question.correct_answer.toLowerCase();
-  //     const isCorrect = userAnswer === correctAnswer;
+  const evaluateAnswers = () => {
+    return quiz.questions.map((question, index) => {
+      const userAnswer = answers[index]?.toLowerCase() ?? '';
+      const correctAnswer = question.correct_answer.toLowerCase();
+      const isCorrect = userAnswer === correctAnswer;
 
-  //     return {
-  //       question: question.question,
-  //       userAnswer,
-  //       correctAnswer,
-  //       isCorrect,
-  //     };
-  //   });
-  // };
+      return {
+        question: question.question,
+        userAnswer,
+        correctAnswer,
+        isCorrect,
+      };
+    });
+  };
 
-  // const closeResults = () => {
-  //   setIsResultOpen(false);
-  //   navigate('/quizzes');
-  // };
+  const closeResults = () => {
+    setIsResultOpen(false);
+    navigate('/quizzes');
+  };
 
-  // const renderQuestion = (question: Question) => {
-  //   return question.type === 'single_choice' ? (
-  //     <SingleChoiceQuestion
-  //       questionIndex={currentQuestionIndex}
-  //       question={question}
-  //       value={answers[currentQuestionIndex]}
-  //       handleAnswerChange={handleAnswerChange}
-  //     />
-  //   ) : (
-  //     <FreeTextQuestion
-  //       questionIndex={currentQuestionIndex}
-  //       question={question}
-  //       value={answers[currentQuestionIndex]}
-  //       handleAnswerChange={handleAnswerChange}
-  //     />
-  //   );
-  // };
+  const renderQuestion = (question: Question) => {
+    return question.type === 'single_choice' ? (
+      <SingleChoiceQuestion
+        questionIndex={currentQuestionIndex}
+        question={question}
+        value={answers[currentQuestionIndex]}
+        handleAnswerChange={handleAnswerChange}
+      />
+    ) : (
+      <FreeTextQuestion
+        questionIndex={currentQuestionIndex}
+        question={question}
+        value={answers[currentQuestionIndex]}
+        handleAnswerChange={handleAnswerChange}
+      />
+    );
+  };
 
   return (
     <>
-      {/* {quiz && (
+      {quiz && (
         <Stack maw={800}>
           <Stepper
             styles={{
@@ -156,7 +156,7 @@ export const QuizPage = () => {
           options={fireworksOptions}
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         />
-      )} */}
+      )}
     </>
   );
 };

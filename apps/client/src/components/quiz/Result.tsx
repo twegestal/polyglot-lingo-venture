@@ -2,9 +2,18 @@ import React from 'react';
 import { Stack, Modal, Button } from '@mantine/core';
 import { CorrectAnswer } from './CorrectAnswer';
 import { IncorrectAnswer } from './IncorrectAnswer';
-import '../styles.css';
+import { AnswerResult } from '../../types/answer';
 
-export const Result = ({ opened, result: { results, score }, onClose }) => {
+type ResultProps = {
+  opened: boolean;
+  result: {
+    results: AnswerResult[];
+    score: number;
+  };
+  onClose: () => void;
+};
+
+export const Result: React.FC<ResultProps> = ({ opened, result: { results, score }, onClose }) => {
   return (
     <Modal
       opened={opened}

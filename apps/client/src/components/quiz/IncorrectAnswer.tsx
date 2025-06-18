@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { Box, Chip, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 import { failColor } from '../../util/constants';
-import '../styles.css';
+import { AnswerResult } from '../../types/answer';
 
-export const IncorrectAnswer = ({ answer }) => {
+type IncorrectAnswerProps = {
+  answer: AnswerResult;
+};
+
+export const IncorrectAnswer: React.FC<IncorrectAnswerProps> = ({ answer }) => {
   const [showAnswer, setShowAnswer] = useState(false);
   return (
     <Box className='answer-box'>

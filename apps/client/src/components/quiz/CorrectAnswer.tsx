@@ -1,9 +1,13 @@
 import { Box, Text } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { successColor } from '../../util/constants';
-import '../styles.css';
+import { AnswerResult } from '../../types/answer';
 
-export const CorrectAnswer = ({ answer }) => {
+type CorrectAnswerProps = {
+  answer: AnswerResult;
+};
+
+export const CorrectAnswer: React.FC<CorrectAnswerProps> = ({ answer }) => {
   return (
     <Box className='answer-box'>
       <Box display={'flex'}>

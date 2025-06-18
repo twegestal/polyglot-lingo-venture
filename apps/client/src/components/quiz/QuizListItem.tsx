@@ -48,7 +48,7 @@ export const QuizListItem = ({
               </Tooltip>
             </Group>
           </Flex>
-          <Spoiler maxHeight={40} showLabel='Show more' hideLabel='Hide' className='spoiler-label'>
+          <Spoiler maxHeight={24} showLabel='Show more' hideLabel='Hide' className='spoiler-label'>
             <Text size='sm' c='dimmed' fw={400}>
               {quiz.description}
             </Text>
