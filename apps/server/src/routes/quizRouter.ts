@@ -13,7 +13,7 @@ export const quizRouter = () => {
 
   router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = (req as any).user;
+      const user = req.user;
 
       if (!user?.id) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -22,6 +22,23 @@ export const quizRouter = () => {
       const quizzes = await getAllQuizzes(user.id);
       return res.status(200).send(quizzes);
     } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get('/stats', async (req, res, next) => {
+    logger.info('Now we are trying to fetch the stats');
+    try {
+      const user = req.user;
+
+      if (!user?.id) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const stats = await getQuizStats(user.id);
+      res.status(200).json(stats);
+    } catch (error) {
+      logger.error(`Error fetching quiz stats: ${error}`);
       next(error);
     }
   });
@@ -76,7 +93,7 @@ export const quizRouter = () => {
     try {
       const quizId = req.params.id;
       const { score, maxScore, status } = req.body;
-      const user = (req as any).user;
+      const user = req.user;
 
       if (!user?.id) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -95,22 +112,6 @@ export const quizRouter = () => {
 
       res.status(201).json(result);
     } catch (error) {
-      next(error);
-    }
-  });
-
-  router.get('/stats', async (req, res, next) => {
-    try {
-      const user = (req as any).user;
-
-      if (!user?.id) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-
-      const stats = await getQuizStats(user.id);
-      res.status(200).json(stats);
-    } catch (error) {
-      logger.error(`Error fetching quiz stats: ${error}`);
       next(error);
     }
   });

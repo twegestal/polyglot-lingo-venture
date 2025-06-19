@@ -27,6 +27,7 @@ export const useSubmitQuizResult = () => {
     mutationFn: submitQuizResult,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
     },
   });
 };
@@ -35,3 +36,11 @@ export const useCreateQuiz = () => {
   const createQuiz = useApi('createQuiz');
   return useMutation({ mutationFn: createQuiz });
 };
+
+export const useQuizStats = () => {
+  const getStats = useApi('getStats');
+  return useAuthedQuery({
+    queryKey: ['stats'],
+    queryFn: getStats
+  });
+}

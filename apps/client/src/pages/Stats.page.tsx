@@ -1,12 +1,7 @@
-import { useMantineTheme } from '@mantine/core';
+import { Text, useMantineTheme } from '@mantine/core';
 import { PieChart, Pie, Cell, Legend, PieLabelRenderProps } from 'recharts';
 import { Title } from '@mantine/core';
-
-const chartData = [
-  { name: 'Completed', value: 10, colorKey: 'teal.6' },
-  { name: 'Failed', value: 5, colorKey: 'red.6' },
-  { name: 'Unattempted', value: 3, colorKey: 'gray.6' },
-];
+import { useQuizStats } from '../hooks/useQuiz';
 
 const renderLabel = ({
   cx,
@@ -36,14 +31,24 @@ const renderLabel = ({
 
 export const StatsPage = () => {
   const theme = useMantineTheme();
+  const { data: stats, isLoading, isError } = useQuizStats();
 
-  const resolvedData = chartData.map((entry) => ({
-    ...entry,
-    color:
-      theme.colors[entry.colorKey.split('.')[0] as keyof typeof theme.colors]?.[
-        parseInt(entry.colorKey.split('.')[1])
-      ] ?? entry.colorKey,
-  }));
+  if (isLoading) return <div>Loading...</div>;
+  if (isError || !stats) return <Text>Failed to load stats</Text>;
+
+  const chartData = [
+    { name: 'Completed', value: stats.completed, colorKey: 'teal.6' },
+    { name: 'Failed', value: stats.failed, colorKey: 'red.6' },
+    { name: 'Unattempted', value: stats.unattempted, colorKey: 'gray.6' },
+  ];
+
+  const resolvedData = chartData.map((entry) => {
+    const [color, shade] = entry.colorKey.split('.');
+    return {
+      ...entry,
+      color: theme.colors[color as keyof typeof theme.colors]?.[parseInt(shade)] ?? entry.colorKey,
+    };
+  });
 
   return (
     <div style={{ width: 400, height: 400 }}>
@@ -68,3 +73,4 @@ export const StatsPage = () => {
     </div>
   );
 };
+

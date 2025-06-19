@@ -1,4 +1,4 @@
-import { Quiz, quizMetadataValidator, quizValidator } from 'api';
+import { Quiz, quizMetadataValidator, quizValidator, statsValidator } from 'api';
 import ky from 'ky';
 import { z } from 'zod';
 import { CreateQuizResponse } from '../types/apiResponse';
@@ -46,5 +46,10 @@ export const quizApi = (apiClient: typeof ky) => ({
     });
 
     return response.json<CreateQuizResponse>();
+  },
+
+  getStats: async () => {
+    const response = await apiClient.get(`${prefixUrl}stats`).json();
+    return statsValidator.parse(response);
   },
 });
