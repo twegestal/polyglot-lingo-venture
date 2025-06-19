@@ -88,14 +88,14 @@ export const QuizPage = () => {
       <SingleChoiceQuestion
         questionIndex={currentQuestionIndex}
         question={question}
-        value={answers[currentQuestionIndex]}
+        value={answers[currentQuestionIndex] || ''}
         handleAnswerChange={handleAnswerChange}
       />
     ) : (
       <FreeTextQuestion
         questionIndex={currentQuestionIndex}
         question={question}
-        value={answers[currentQuestionIndex]}
+        value={answers[currentQuestionIndex] || ''}
         handleAnswerChange={handleAnswerChange}
       />
     );

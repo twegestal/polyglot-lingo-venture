@@ -27,7 +27,7 @@ export const quizApi = (apiClient: typeof ky) => ({
     maxScore: number;
     isPassed: boolean;
   }) => {
-    const status = isPassed ? 'success' : score === 0 ? 'fail' : 'neutral';
+    const status = isPassed ? 'success' : 'fail';
 
     await apiClient.post(`quizzes/${id}/result`, {
       json: { score, maxScore, status },
